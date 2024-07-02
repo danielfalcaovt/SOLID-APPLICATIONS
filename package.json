@@ -10,7 +10,7 @@
   "lint-staged": {
     "*.ts": [
       "eslint 'src/**/*.ts' --fix",
-      "git add ."
+      "git add --all"
     ]
   },
   "keywords": [],

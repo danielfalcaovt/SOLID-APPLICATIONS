@@ -3,14 +3,28 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint 'src/**/*.ts' --fix",
+      "git add ."
+    ]
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@eslint/js": "^9.6.0",
+    "eslint": "^9.6.0",
     "git-commit-msg-linter": "^5.0.8",
-    "typescript": "^5.5.3"
+    "globals": "^15.8.0",
+    "husky": "^9.0.11",
+    "jest": "^29.7.0",
+    "lint-staged": "^15.2.7",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.15.0"
   }
 }

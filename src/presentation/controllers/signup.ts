@@ -1,18 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 import MissingParamError from "../errors/missing-param-error"
+import { HttpRequest, HttpResponse } from "../protocols/http"
 
 export class SignUpController {
-    handle(httpRequest: any): any {
-        const requiredParameters = ['username', 'email', 'password', 'confirmPassword']
+    handle(httpRequest: HttpRequest): HttpResponse {
+        const requiredParameters = ['name', 'email', 'password', 'confirmPassword']
         for (const pos of requiredParameters) {
             if (!httpRequest.body[pos]) {
-                return new Error("missing param")
+                return {
+                    statusCode: 400,
+                    body: new Error(`missing param: ${pos}`)
+                }
             }
         }
         return {
-            statusCode: 400
+            statusCode: 200,
+            body: ''
         }
     }
 }

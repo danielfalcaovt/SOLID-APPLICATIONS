@@ -84,7 +84,7 @@ describe('SignUp Controller', () => {
     })
     test('Should return 400 if an invalid email was provided', () => {
         const { sut, emailValidatorStub } = makeSut()
-        jest.spyOn(emailValidatorStub, 'isValid').mockReturnValue(false)
+        jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
         const httpRequest: HttpRequest = {
             body: {
                 name: 'any_name',

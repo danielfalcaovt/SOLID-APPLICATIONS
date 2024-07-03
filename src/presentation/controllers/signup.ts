@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
  
 
 import MissingParamError from "../errors/missing-param-error"
@@ -11,8 +11,8 @@ export class SignUpController {
             if (!httpRequest.body[pos]) {
                 return {
                     statusCode: 400,
-                    body: new Error(`missing param: ${pos}`)
-                }
+                    body: new MissingParamError(`missing param: ${pos}`)
+                }   
             }
         }
         return {

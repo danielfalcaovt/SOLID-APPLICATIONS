@@ -2,22 +2,17 @@
  
 
 import MissingParamError from "../errors/missing-param-error"
-import { HttpRequest, HttpResponse } from "../protocols/http"
+import { badRequest, ok } from "../helpers/http-helpers"
+import { HttpRequest, HttpResponse } from "../protocols/http-protocols"
 
 export class SignUpController {
     handle(httpRequest: HttpRequest): HttpResponse {
         const requiredParameters = ['name', 'email', 'password', 'confirmPassword']
         for (const pos of requiredParameters) {
             if (!httpRequest.body[pos]) {
-                return {
-                    statusCode: 400,
-                    body: new MissingParamError(`missing param: ${pos}`)
-                }   
+                return badRequest(new MissingParamError(pos))  
             }
         }
-        return {
-            statusCode: 200,
-            body: ''
-        }
+        return ok('Cadastrado com Sucesso!')
     }
 }

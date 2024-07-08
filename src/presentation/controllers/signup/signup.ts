@@ -9,7 +9,7 @@ export class SignUpController implements Controller {
         this.EmailValidator = emailValidator
         this.AddAccount = addAccount
     }
-    handle(httpRequest: HttpRequest): HttpResponse {
+    async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
         try {
             const requiredParameters = ['name', 'email', 'password', 'confirmPassword']
             for (const pos of requiredParameters) {
@@ -25,8 +25,8 @@ export class SignUpController implements Controller {
             if (!isValid) {
                 return badRequest(new InvalidParamError('email'))
             }
-            this.AddAccount.add({name, email, password})
-            return ok('Cadastrado com Sucesso!')
+            const account = await this.AddAccount.add({name, email, password})
+            return ok(account)
         } catch(err) {
             return serverError()
         }

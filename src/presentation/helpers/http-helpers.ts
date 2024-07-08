@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import ServerError from "../errors/server-error"
+import { ServerError } from "../errors"
 import { HttpResponse } from "../protocols/http-protocols"
 
 export const badRequest = (error: Error): HttpResponse => ({

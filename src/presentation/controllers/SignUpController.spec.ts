@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import InvalidParamError from "../errors/invalid-param-error"
-import MissingParamError from "../errors/missing-param-error"
-import ServerError from "../errors/server-error"
+import { InvalidParamError, MissingParamError, ServerError } from "../errors"
 import IEmailValidator from "../protocols/email-validator"
 import { HttpRequest } from "../protocols/http-protocols"
 import { SignUpController } from "./signup"
@@ -13,18 +11,34 @@ interface ISut {
 }
 
 const makeSut = (): ISut => {
-    class EmailValidatorStub implements IEmailValidator {
-        isValid(email: string): boolean {
-            return true
-        }
-    }
-    const emailValidatorStub = new EmailValidatorStub()
+    const emailValidatorStub = makeEmailValidator()
     const sut = new SignUpController(emailValidatorStub)
     return {
         sut,
         emailValidatorStub
     }
 }
+
+const makeEmailValidator = (): IEmailValidator => {
+    class EmailValidatorStub implements IEmailValidator {
+        isValid(email: string): boolean {
+            return true
+        }
+    }
+    const emailValidatorStub = new EmailValidatorStub()
+    return emailValidatorStub
+}
+
+const makeEmailValidatorWithError = (): IEmailValidator => {
+    class EmailValidatorStub implements IEmailValidator {
+        isValid(email: string): boolean {
+            throw new Error()
+        }
+    }
+    const emailValidatorStub = new EmailValidatorStub()
+    return emailValidatorStub
+}
+
 
 describe('SignUp Controller', () => {
     test('Should return 400 if no name was provided', () => {
@@ -113,12 +127,7 @@ describe('SignUp Controller', () => {
         expect(emailValidatorSpy).toHaveBeenCalledWith('any_mail@mail.com')
     })
     test('Should return 500 if an invalid email throws', () => {
-        class EmailValidatorStub implements IEmailValidator {
-            isValid(email: string): boolean {
-                throw new Error()
-            }
-        }
-        const emailValidatorStub = new EmailValidatorStub()
+        const emailValidatorStub = makeEmailValidatorWithError()
         const sut = new SignUpController(emailValidatorStub)
         const httpRequest: HttpRequest = {
             body: {

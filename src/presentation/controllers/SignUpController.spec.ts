@@ -29,17 +29,6 @@ const makeEmailValidator = (): IEmailValidator => {
     return emailValidatorStub
 }
 
-const makeEmailValidatorWithError = (): IEmailValidator => {
-    class EmailValidatorStub implements IEmailValidator {
-        isValid(email: string): boolean {
-            throw new Error()
-        }
-    }
-    const emailValidatorStub = new EmailValidatorStub()
-    return emailValidatorStub
-}
-
-
 describe('SignUp Controller', () => {
     test('Should return 400 if no name was provided', () => {
         const { sut } = makeSut()
@@ -97,6 +86,20 @@ describe('SignUp Controller', () => {
         expect(httpResponse.statusCode).toBe(400)
         expect(httpResponse.body).toEqual(new MissingParamError('confirmPassword'))
     })
+    test('Should return 400 if password confirmation fails', () => {
+        const { sut } = makeSut()
+        const httpRequest: HttpRequest = {
+            body: {
+                name: 'any_name',
+                email: 'any_password',
+                password: 'any_password',
+                confirmPassword: 'different_password'
+            }
+        }
+        const httpResponse = sut.handle(httpRequest)
+        expect(httpResponse.statusCode).toBe(400)
+        expect(httpResponse.body).toEqual(new InvalidParamError('confirmPassword'))
+    })
     test('Should return 400 if an invalid email was provided', () => {
         const { sut, emailValidatorStub } = makeSut()
         jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
@@ -127,8 +130,10 @@ describe('SignUp Controller', () => {
         expect(emailValidatorSpy).toHaveBeenCalledWith('any_mail@mail.com')
     })
     test('Should return 500 if an invalid email throws', () => {
-        const emailValidatorStub = makeEmailValidatorWithError()
-        const sut = new SignUpController(emailValidatorStub)
+        const { sut, emailValidatorStub } = makeSut()
+        jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+            throw new Error()
+        })
         const httpRequest: HttpRequest = {
             body: {
                 name: 'any_name',

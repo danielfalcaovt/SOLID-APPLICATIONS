@@ -1,15 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 
 import { MissingParamError, InvalidParamError } from "../errors"
 import { badRequest, ok, serverError } from "../helpers/http-helpers"
 import { HttpRequest, HttpResponse } from "../protocols/http-protocols"
 import { Controller } from "../protocols/controller"
 import IEmailValidator from "../protocols/email-validator"
+import { IAddAccount } from "../../domain/usecases/add-account"
 
 export class SignUpController implements Controller {
     private EmailValidator: IEmailValidator
-    constructor(emailValidator: IEmailValidator) {
+    private AddAccount: IAddAccount
+    constructor(emailValidator: IEmailValidator, addAccount: IAddAccount) {
         this.EmailValidator = emailValidator
+        this.AddAccount = addAccount
     }
     handle(httpRequest: HttpRequest): HttpResponse {
         try {
@@ -27,6 +30,7 @@ export class SignUpController implements Controller {
             if (!isValid) {
                 return badRequest(new InvalidParamError('email'))
             }
+            this.AddAccount.add({name, email, password})
             return ok('Cadastrado com Sucesso!')
         } catch(err) {
             return serverError()

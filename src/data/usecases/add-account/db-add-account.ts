@@ -15,8 +15,7 @@ export default class DbAddAccount implements AddAccountRepository {
         const { email, name, password } = account
         const encryptedPassword = await this.Encrypter.encrypt(password)
         const addedAccount = await this.addAccountRepositoryStub.add(Object.assign({}, account, { password: encryptedPassword }))
-        
-        
+
         return new Promise(resolve => {
             resolve(addedAccount)
         })

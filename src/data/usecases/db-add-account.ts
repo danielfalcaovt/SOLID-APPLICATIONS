@@ -2,9 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import AccountModel from "../../domain/models/account";
 import { AddAccountModel, IAddAccount } from "../../domain/usecases/add-account";
+import { IEncrypter } from "../protocols/iencrypter";
 
 export default class DbAddAccount implements IAddAccount {
-    private Encrypter : any
+    private Encrypter : IEncrypter
     constructor(encrypter: any) {
         this.Encrypter = encrypter
     }

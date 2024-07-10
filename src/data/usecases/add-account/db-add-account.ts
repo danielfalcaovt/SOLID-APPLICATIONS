@@ -4,17 +4,17 @@ import { AddAccountModel, AddAccountRepository, IEncrypter } from './db-add-acco
 
 export default class DbAddAccount implements AddAccountRepository {
     private Encrypter : IEncrypter
-    private addAccountRepositoryStub: AddAccountRepository
+    private addAccountRepository: AddAccountRepository
 
     constructor(encrypter: IEncrypter, AddAccountRepository: AddAccountRepository) {
         this.Encrypter = encrypter
-        this.addAccountRepositoryStub = AddAccountRepository
+        this.addAccountRepository = AddAccountRepository
     }
 
     async add(account: AddAccountModel): Promise<AccountModel> {
         const { email, name, password } = account
         const encryptedPassword = await this.Encrypter.encrypt(password)
-        const addedAccount = await this.addAccountRepositoryStub.add(Object.assign({}, account, { password: encryptedPassword }))
+        const addedAccount = await this.addAccountRepository.add(Object.assign({}, account, { password: encryptedPassword }))
 
         return new Promise(resolve => {
             resolve(addedAccount)

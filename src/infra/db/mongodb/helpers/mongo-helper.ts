@@ -6,7 +6,7 @@ export const MongoHelper = {
     client: null as unknown as MongoClient,
     async connect(uri: string | undefined) {
         if (uri) {
-            this.client = await MongoClient.connect(uri)
+            this.client = new MongoClient(uri)
         }
     },
     async disconnect() {

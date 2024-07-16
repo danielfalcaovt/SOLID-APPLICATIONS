@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller, HttpRequest, HttpResponse, IAddAccount, IEmailValidator  } from './signup-protocols'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { badRequest, ok, serverError } from '../../helpers/http-helpers'
@@ -27,9 +28,8 @@ export class SignUpController implements Controller {
             }
             const account = await this.AddAccount.add({name, email, password})
             return ok(account)
-        } catch(err) {
-            console.log(err)
-            return serverError()
+        } catch(err: any) {
+            return serverError(err)
         }
     }
 }

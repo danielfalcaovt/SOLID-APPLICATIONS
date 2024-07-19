@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { IAuthenticator } from "../../../domain/usecases/authentication"
 import { InvalidParamError, MissingParamError } from "../../errors"
-import { badRequest, HttpRequest, IEmailValidator, serverError } from "../signup/signup-protocols"
+import { badRequest, HttpRequest, IEmailValidator, serverError, unauthorized } from './login-protocols'
 import { LoginController } from "./login"
 
 interface SutTypes {
@@ -95,5 +95,11 @@ describe('Login Controller', () => {
         const isValidSpy = jest.spyOn(authenticationStub, 'auth')
         await sut.handle(makeHttpRequest())
         expect(isValidSpy).toHaveBeenCalledWith( 'any_mail@mail.com', 'any_password')
+    })
+    it('Should return 401 if invalid credentials was provided', async () => {
+        const { sut, authenticationStub } = makeSut()
+        jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+        const httpResponse = await sut.handle(makeHttpRequest())
+        expect(httpResponse).toEqual(unauthorized())
     })
 })

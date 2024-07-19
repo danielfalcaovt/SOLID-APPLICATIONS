@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { InvalidParamError, MissingParamError } from "../../errors"
-import { badRequest, IEmailValidator } from "../signup/signup-protocols"
+import { badRequest, HttpRequest, IEmailValidator } from "../signup/signup-protocols"
 import { LoginController } from "./login"
 
 interface SutTypes {
@@ -27,6 +27,13 @@ const makeEmailValidatorStub = (): IEmailValidator => {
     return emailValidatorStub
 }
 
+const makeHttpRequest = (): HttpRequest => ({
+    body: {
+        email: 'any_mail@mail.com',
+        password: 'any_password'
+    }
+})
+
 describe('Login Controller', () => {
     it('Should return 400 if no email was provided', async () => {
         const {sut} = makeSut()
@@ -43,22 +50,22 @@ describe('Login Controller', () => {
         const {sut} = makeSut()
         const httpRequest = {
             body: {
-                email: 'any_email@mail.com'
+                email: 'any_mail@mail.com'
             }
         }
         const httpResponse = await sut.handle(httpRequest)
         expect(httpResponse).toEqual(badRequest(new MissingParamError('password')))
     })
+    it('Should call emailValidator with correct email', async ()=>{
+        const { sut, emailValidator } = makeSut()
+        const isValidSpy = jest.spyOn(emailValidator, 'isValid')
+        await sut.handle(makeHttpRequest())
+        expect(isValidSpy).toHaveBeenCalledWith('any_mail@mail.com')
+    })
     it('Should return 400 if an invalid email was provided', async () => {
         const { sut, emailValidator } = makeSut()
         jest.spyOn(emailValidator, 'isValid').mockReturnValueOnce(false)
-        const httpRequest = {
-            body: {
-                email: 'invalid_email@mail.com',
-                password: 'any_password'
-            }
-        }
-        const httpResponse = await sut.handle(httpRequest)
+        const httpResponse = await sut.handle(makeHttpRequest())
         expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')))
     })
 })

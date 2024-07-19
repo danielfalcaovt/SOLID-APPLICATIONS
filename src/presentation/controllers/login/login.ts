@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
- 
+
+import { Controller, HttpRequest, HttpResponse, IEmailValidator  } from './login-protocols'
 import { IAuthenticator } from "../../../domain/usecases/authentication";
-import { Controller, HttpRequest, HttpResponse } from "../../protocols";
-import { badRequest, IEmailValidator, InvalidParamError, MissingParamError, ok, serverError } from "../signup/signup-protocols";
+import { badRequest, InvalidParamError, MissingParamError, ok, serverError, unauthorized } from "../signup/signup-protocols";
 
 export class LoginController implements Controller {
     private readonly emailValidator: IEmailValidator
@@ -24,7 +24,10 @@ export class LoginController implements Controller {
                 return new Promise(resolve => resolve(badRequest(new InvalidParamError('email'))))
             }
 
-            await this.authenticator.auth(email, password)
+            const auth = await this.authenticator.auth(email, password)
+            if (!auth) {
+                return new Promise(resolve => resolve(unauthorized()))
+            }
             return new Promise(resolve => resolve(ok('')))
         }catch(error: any) {
             return new Promise(resolve => {

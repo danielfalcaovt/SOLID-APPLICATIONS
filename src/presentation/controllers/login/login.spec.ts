@@ -37,7 +37,7 @@ describe('Login Controller', () => {
         }
         const httpResponse = await sut.handle(httpRequest)
         expect(httpResponse.statusCode).toBe(400)
-        expect(httpResponse.body).toEqual(new MissingParamError('email'))
+        expect(httpResponse).toEqual(badRequest(new MissingParamError('email')))
     })
     it('Should return 400 if no password was provided', async () => {
         const {sut} = makeSut()
@@ -47,8 +47,7 @@ describe('Login Controller', () => {
             }
         }
         const httpResponse = await sut.handle(httpRequest)
-        expect(httpResponse.statusCode).toBe(400)
-        expect(httpResponse.body).toEqual(new MissingParamError('password'))
+        expect(httpResponse).toEqual(badRequest(new MissingParamError('password')))
     })
     it('Should return 400 if an invalid email was provided', async () => {
         const { sut, emailValidator } = makeSut()

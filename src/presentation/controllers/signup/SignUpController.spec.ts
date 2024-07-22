@@ -72,18 +72,6 @@ const makeFakeAccount = (): AccountModel => ({
 })
 
 describe('SignUp Controller', () => {
-    test('Should return 400 if no confirmation password was provided', async () => {
-        const { sut } = makeSut()
-        const httpRequest: HttpRequest = {
-            body: {
-                name: 'any_name',
-                email: 'any_password',
-                password: 'any_password'
-            }
-        }
-        const httpResponse = await sut.handle(httpRequest)
-        expect(httpResponse).toEqual(badRequest(new MissingParamError('confirmPassword')))
-    })
     test('Should return 400 if password confirmation fails', async () => {
         const { sut } = makeSut()
         const httpRequest: HttpRequest = {

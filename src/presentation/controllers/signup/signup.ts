@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller, HttpRequest, HttpResponse, IAddAccount, IEmailValidator, IValidation  } from './signup-protocols'
-import { InvalidParamError, MissingParamError } from '../../errors'
+import { InvalidParamError } from '../../errors'
 import { badRequest, ok, serverError } from '../../helpers/http-helpers'
 
 export class SignUpController implements Controller {
@@ -17,12 +17,6 @@ export class SignUpController implements Controller {
             const error = this.Validation.validate(httpRequest.body)
             if (error) {
                 return badRequest(error)
-            }
-            const requiredParameters = ['name', 'email', 'password', 'confirmPassword']
-            for (const pos of requiredParameters) {
-                if (!httpRequest.body[pos]) {
-                    return badRequest(new MissingParamError(pos))  
-                }
             }
             const { name, email, password, confirmPassword } = httpRequest.body
             if (password !== confirmPassword) {

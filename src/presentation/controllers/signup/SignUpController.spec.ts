@@ -1,24 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import AccountModel from "../../../domain/models/account"
 import { SignUpController } from "./signup"
-import { AddAccountModel, badRequest, HttpRequest, IAddAccount, IEmailValidator, ok, serverError } from './signup-protocols'
+import { AddAccountModel, badRequest, HttpRequest, IAddAccount, IEmailValidator, ok, serverError, IValidation } from './signup-protocols'
 import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
 
 interface ISut {
     sut: SignUpController
     emailValidatorStub: IEmailValidator
     addAccountStub: IAddAccount
+    validationStub: IValidation
 }
 
 const makeSut = (): ISut => {
     const emailValidatorStub = makeEmailValidator()
+    const validationStub = makeValidationStub()
     const addAccountStub = makeAddAccount()
-    const sut = new SignUpController(emailValidatorStub, addAccountStub)
+    const sut = new SignUpController(emailValidatorStub, addAccountStub, validationStub)
     return {
         sut,
         emailValidatorStub,
-        addAccountStub
+        addAccountStub,
+        validationStub
     }
 }
 
@@ -39,6 +43,16 @@ const makeAddAccount = (): IAddAccount => {
     }
     const addAccountStub = new AddAccountStub()
     return addAccountStub
+}
+
+const makeValidationStub = (): IValidation => {
+    class ValidationStub implements IValidation {
+        validate(data: any): Error | null {
+            return null
+        }
+    }
+    const validationStub = new ValidationStub()
+    return validationStub
 }
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -169,5 +183,18 @@ describe('SignUp Controller', () => {
         const { sut } = makeSut()
         const httpResponse = await sut.handle(makeFakeRequest())
         expect(httpResponse).toEqual(ok(makeFakeAccount()))
+    })
+    test('Should call Validation with correct values', async () => {
+        const { sut, validationStub } = makeSut()
+        const validationSpy = jest.spyOn(validationStub, 'validate')
+        const httpResponse = makeFakeRequest()
+        await sut.handle(httpResponse)
+        expect(validationSpy).toHaveBeenCalledWith(httpResponse.body)
+    })
+    test('Should return 400 if Validation return error', async () => {
+        const { sut, validationStub } = makeSut()
+        jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_param'))
+        const httpResponse = await sut.handle(makeFakeRequest())
+        expect(httpResponse).toEqual(badRequest(new MissingParamError('any_param')))
     })
 })

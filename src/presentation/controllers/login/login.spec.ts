@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { IAuthenticator } from "../../../domain/usecases/authentication"
 import { InvalidParamError, MissingParamError } from "../../errors"
-import { badRequest, HttpRequest, IEmailValidator, serverError, unauthorized } from './login-protocols'
+import { badRequest, HttpRequest, IEmailValidator, ok, serverError, unauthorized } from './login-protocols'
 import { LoginController } from "./login"
 
 interface SutTypes {
@@ -107,5 +107,10 @@ describe('Login Controller', () => {
         jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
         const httpResponse = await sut.handle(makeHttpRequest())
         expect(httpResponse).toEqual(serverError(new Error()))
+    })
+    it('Should return 200 on success', async () => {
+        const { sut } = makeSut()
+        const httpResponse = await sut.handle(makeHttpRequest())
+        expect(httpResponse).toEqual(ok('any_token'))
     })
 })

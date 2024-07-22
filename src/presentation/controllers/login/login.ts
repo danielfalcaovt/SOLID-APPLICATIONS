@@ -28,7 +28,7 @@ export class LoginController implements Controller {
             if (!auth) {
                 return new Promise(resolve => resolve(unauthorized()))
             }
-            return new Promise(resolve => resolve(ok('')))
+            return new Promise(resolve => resolve(ok(auth)))
         }catch(error: any) {
             return new Promise(resolve => {
                 resolve(serverError(error))

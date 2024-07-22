@@ -1,17 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Controller, HttpRequest, HttpResponse, IAddAccount, IEmailValidator  } from './signup-protocols'
+import { Controller, HttpRequest, HttpResponse, IAddAccount, IEmailValidator, IValidation  } from './signup-protocols'
 import { InvalidParamError, MissingParamError } from '../../errors'
 import { badRequest, ok, serverError } from '../../helpers/http-helpers'
 
 export class SignUpController implements Controller {
     private EmailValidator: IEmailValidator
     private AddAccount: IAddAccount
-    constructor(emailValidator: IEmailValidator, addAccount: IAddAccount) {
+    private Validation: IValidation
+    constructor(emailValidator: IEmailValidator, addAccount: IAddAccount, validation: IValidation) {
         this.EmailValidator = emailValidator
         this.AddAccount = addAccount
+        this.Validation = validation
     }
     async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
         try {
+            const error = this.Validation.validate(httpRequest.body)
+            if (error) {
+                return badRequest(error)
+            }
             const requiredParameters = ['name', 'email', 'password', 'confirmPassword']
             for (const pos of requiredParameters) {
                 if (!httpRequest.body[pos]) {

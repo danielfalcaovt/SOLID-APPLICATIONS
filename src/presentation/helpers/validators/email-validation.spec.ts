@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { EmailValidation } from "./email-validation"
-import { HttpRequest, IEmailValidator, serverError } from '../../controllers/signup/signup-protocols'
-import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
+import { HttpRequest, IEmailValidator } from '../../controllers/signup/signup-protocols'
+import { InvalidParamError } from '../../errors'
 
 interface ISut {
     sut: EmailValidation
@@ -38,18 +38,23 @@ const makeEmailValidator = (): IEmailValidator => {
 }
 
 describe('EmailValidation Controller', () => {
+    test('Should return an error if emailValidator returns false', () => {
+        const { sut, emailValidatorStub } = makeSut()
+        jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
+        const error = sut.validate({ email: 'any_mail@mail.com' })
+        expect(error).toEqual(new InvalidParamError('email'))
+    })
     test('Should call emailValidator with correct parameters', () => {
         const { sut, emailValidatorStub } = makeSut()
         const emailValidatorSpy = jest.spyOn(emailValidatorStub, 'isValid')
-        const httpRequest = makeFakeRequest()
-        sut.validate(httpRequest.body)
+        sut.validate({ email: 'any_mail@mail.com' })
         expect(emailValidatorSpy).toHaveBeenCalledWith('any_mail@mail.com')
     })
     test('Should throw if emailValidator throws', () => {
         const { sut, emailValidatorStub } = makeSut()
         jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
-            throw new Error() // implementação mockada direto, logo...
+            throw new Error() // substitui a implementação do emailValidator por um retorno de erro forçado
         })
-        expect(sut.validate).toThrow() // possibilita o teste diretamente
+        expect(sut.validate).toThrow() // o controlador receberá o erro e tratará
     })
 })

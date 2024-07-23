@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { IAuthenticator } from "../../../domain/usecases/authentication"
-import { InvalidParamError, MissingParamError } from "../../errors"
-import { badRequest, HttpRequest, IEmailValidator, ok, serverError, unauthorized } from './login-protocols'
+import { MissingParamError } from "../../errors"
+import { badRequest, HttpRequest, ok, serverError, unauthorized } from './login-protocols'
 import { LoginController } from "./login"
 import { IValidation } from "../signup/signup-protocols"
 

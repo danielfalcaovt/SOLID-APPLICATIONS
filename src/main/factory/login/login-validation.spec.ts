@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { EmailValidation } from "../../../presentation/helpers/validators/email-validation"
-import { RequiredFieldValidation } from "../../../presentation/helpers/validators/required-fields-validation"
+import { EmailValidation, RequiredFieldValidation } from "../../../presentation/helpers/validators"
 import { IValidation } from "../../../presentation/protocols/validation"
 import { IEmailValidator } from "../../../presentation/protocols/email-validator"
 import { makeLoginValidation } from "./login-validation"

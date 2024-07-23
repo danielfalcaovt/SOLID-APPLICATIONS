@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller, HttpRequest, HttpResponse, IAddAccount, IValidation  } from './signup-protocols'
-import { badRequest, ok, serverError } from '../../helpers/http-helpers'
+import { badRequest, ok, serverError } from '../../helpers/http/http-helpers'
 
 export class SignUpController implements Controller {
     private AddAccount: IAddAccount

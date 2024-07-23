@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ServerError } from "../../presentation/errors/server-error"
-import { serverError } from "../../presentation/helpers/http-helpers"
+import { serverError } from "../../presentation/helpers/http/http-helpers"
 import { Controller, HttpRequest, HttpResponse } from "../../presentation/protocols"
 import { ILog } from "../../data/protocols/ILog"
 import { LogDecorator } from "./log"

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { IAuthenticator } from "../../../domain/usecases/authentication"
+import { AuthenticationModel, IAuthenticator } from "../../../domain/usecases/authentication"
 import { MissingParamError } from "../../errors"
 import { badRequest, HttpRequest, ok, serverError, unauthorized } from './login-protocols'
 import { LoginController } from "./login"
@@ -35,7 +35,7 @@ const makeValidationStub = (): IValidation => {
 
 const makeAuthenticationStub = (): IAuthenticator => {
     class AuthenticationStub implements IAuthenticator {
-        async auth(email:string, password: string): Promise<string> {
+        async auth(authentication: AuthenticationModel): Promise<string> {
             return new Promise(resolve => resolve('any_token'))
         }
     }
@@ -55,7 +55,7 @@ describe('Login Controller', () => {
         const { sut, authenticationStub } = makeSut()
         const isValidSpy = jest.spyOn(authenticationStub, 'auth')
         await sut.handle(makeHttpRequest())
-        expect(isValidSpy).toHaveBeenCalledWith( 'any_mail@mail.com', 'any_password')
+        expect(isValidSpy).toHaveBeenCalledWith({email: 'any_mail@mail.com', password: 'any_password'})
     })
     it('Should return 401 if invalid credentials was provided', async () => {
         const { sut, authenticationStub } = makeSut()

@@ -7,4 +7,9 @@ describe('CompareFields Validation', () => {
         const error = sut.validate({firstField: 'any_value', secondField: 'different_value'})
         expect(error).toEqual(new InvalidParamError('confirmPassword'))
     })
+    it('Should not return on succeeds', () => {
+        const sut = new CompareFieldsValidation('firstField', 'secondField')
+        const error = sut.validate({firstField: 'any_value', secondField: 'any_value'})
+        expect(error).toBeFalsy()
+    })
 })

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { MissingParamError } from "../../errors"
 import { RequiredFieldValidation } from "./required-fields-validation"
-import { IValidation } from "./validation"
+import { IValidation } from "../../protocols/validation"
 import { ValidationComposite } from "./validation-composite"
 
 interface SutTypes {

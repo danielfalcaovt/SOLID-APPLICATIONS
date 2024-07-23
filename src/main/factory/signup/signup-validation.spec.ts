@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { makeSignUpValidation } from "./signup-validation"
 import { ValidationComposite } from "../../../presentation/helpers/validators/validation-composite"
-import { IValidation } from "../../../presentation/helpers/validators/validation"
+import { IValidation } from "../../../presentation/protocols/validation"
 import { RequiredFieldValidation } from "../../../presentation/helpers/validators/required-fields-validation"
 import { CompareFieldsValidation } from "../../../presentation/helpers/validators/compare-fields-validation"
 import { EmailValidation } from "../../../presentation/helpers/validators/email-validation"

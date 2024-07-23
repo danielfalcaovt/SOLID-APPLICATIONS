@@ -32,4 +32,9 @@ describe('Validation Composite', () => {
         const response = sut.validate({ field: 'any_value' })
         expect(response).toEqual(new Error())
     })
+    it('Should not return if no one test fail', () => {
+        const { sut } = makeSut()
+        const response = sut.validate({data: 'any_data'})
+        expect(response).toBeFalsy()
+    })
 })

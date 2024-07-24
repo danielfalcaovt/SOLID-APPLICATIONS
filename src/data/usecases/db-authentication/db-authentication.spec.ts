@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import AccountModel from "../../../domain/models/account"
+import { IHashComparer } from "../../protocols/criptography/ihashcomparer"
 import { ILoadAccountByEmail } from "../../protocols/db/load-account-by-email"
 import { DbAuthentication } from "./db-authentication"
 
@@ -9,7 +10,7 @@ interface SutTypes {
     updateAccessTokenStub: any
     loadAccountStub: ILoadAccountByEmail
     tokenGeneratorStub: any
-    hashComparerStub: any
+    hashComparerStub: IHashComparer
 }
 
 const makeSut = (): SutTypes => {
@@ -44,7 +45,7 @@ const makeLoadAccountByEmail = (): ILoadAccountByEmail => {
                 email: 'any_mail',
                 id: 'any_id',
                 name: 'any_name',
-                password: 'any_password'
+                password: 'any_hash'
 
             })
         )}
@@ -53,9 +54,9 @@ const makeLoadAccountByEmail = (): ILoadAccountByEmail => {
     return _
 }
 
-const makeHashComparer = (): any => {
-    class hashComparerStub {
-        compare(token: string): Promise<boolean> {
+const makeHashComparer = (): IHashComparer => {
+    class hashComparerStub implements IHashComparer {
+        compare(password: string, hash: string): Promise<boolean> {
             return new Promise(resolve => resolve(true))
         }
     }
@@ -100,5 +101,11 @@ describe('DbAuthentication Usecase', () => {
         }))
         const promise = sut.auth(makeFakeAccount()) // captura a promise que o sut retorna
         await expect(promise).rejects.toThrow() // espera que a promise rejeite com um error
+    })
+    it('Should call HashComparer with correct password', async () => {
+        const { sut, hashComparerStub } = makeSut()
+        const hashSpy = jest.spyOn(hashComparerStub, 'compare')
+        await sut.auth(makeFakeAccount())
+        expect(hashSpy).toHaveBeenCalledWith('any_password', 'any_hash')
     })
 })

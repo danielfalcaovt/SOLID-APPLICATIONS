@@ -3,12 +3,13 @@
 import AccountModel from "../../../domain/models/account"
 import { IHashComparer } from "../../protocols/criptography/ihashcomparer"
 import { ITokenGenerator } from "../../protocols/criptography/itoken-generator"
+import { IUpdateAccessToken } from "../../protocols/db/iupdate-access-token"
 import { ILoadAccountByEmail } from "../../protocols/db/load-account-by-email"
 import { DbAuthentication } from "./db-authentication"
 
 interface SutTypes {
     sut: DbAuthentication
-    updateAccessTokenStub: any
+    updateAccessTokenStub: IUpdateAccessToken
     loadAccountStub: ILoadAccountByEmail
     tokenGeneratorStub: ITokenGenerator
     hashComparerStub: IHashComparer
@@ -29,10 +30,10 @@ const makeSut = (): SutTypes => {
     }
 }
 
-const makeUpdateAccessTokenStub = (): any => {
-    class updateAccessTokenStub {
-        update(token: string): Promise<boolean> {
-            return new Promise(resolve => resolve(true))
+const makeUpdateAccessTokenStub = (): IUpdateAccessToken => {
+    class updateAccessTokenStub implements IUpdateAccessToken {
+        update(id: string, token: string): Promise<void> {
+            return new Promise(resolve => resolve())
         }
     }
     const _ = new updateAccessTokenStub()
@@ -136,5 +137,16 @@ describe('DbAuthentication Usecase', () => {
         }))
         const promise = sut.auth(makeFakeAccount()) // captura a promise que o sut retorna
         await expect(promise).rejects.toThrow() // espera que a promise rejeite com um error
+    })
+    it('Should return token on success', async () => {
+        const { sut } = makeSut()
+        const response = await sut.auth(makeFakeAccount())
+        expect(response).toBe('any_token')
+    })
+    it('Should call UpdateAccessToken with correct values', async () => {
+        const { sut, updateAccessTokenStub } = makeSut()
+        const updateSpy = jest.spyOn(updateAccessTokenStub, 'update')
+        await sut.auth(makeFakeAccount())
+        expect(updateSpy).toHaveBeenCalledWith('any_id', 'any_token')
     })
 })

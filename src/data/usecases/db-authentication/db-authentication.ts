@@ -19,8 +19,10 @@ export class DbAuthentication implements IAuthenticator {
         if (!account) {
             return new Promise(resolve =>resolve(null))
         }
-        await this.HashComparer.compare(authentication.password, account.password)
+        const result = await this.HashComparer.compare(authentication.password, account.password)
+        if (!result) {
+            return new Promise(resolve => resolve(null))
+        }
         return new Promise(resolve =>resolve('any_token'))
-
     }
 }

@@ -14,4 +14,10 @@ describe('Jwt Adapter', () => {
         await sut.generate('any_id')
         expect(jwtSpy).toHaveBeenCalledWith({ id: 'any_id' }, 'secret')
     })
+    it('Should throw if generate throws', async () => {
+        const sut = new JwtAdapter('secret')
+        jest.spyOn(jwt, 'sign').mockImplementation(async () => Promise.reject(new Error()))
+        const promise = sut.generate('any_key')
+        expect(promise).rejects.toThrow()
+    })
 })

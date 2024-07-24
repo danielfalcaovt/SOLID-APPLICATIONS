@@ -2,7 +2,7 @@
 import { ServerError } from "../../presentation/errors/server-error"
 import { serverError } from "../../presentation/helpers/http/http-helpers"
 import { Controller, HttpRequest, HttpResponse } from "../../presentation/protocols"
-import { ILog } from "../../data/protocols/ILog"
+import { ILog } from "../../data/protocols/db/ILog"
 import { LogDecorator } from "./log"
 
 interface SutTypes {

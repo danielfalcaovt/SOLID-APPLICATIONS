@@ -1,5 +1,5 @@
 import { Controller, HttpRequest, HttpResponse } from "../../presentation/protocols";
-import { ILog } from "../../data/protocols/ILog";
+import { ILog } from "../../data/protocols/db/ILog";
 
 export class LogDecorator implements Controller {
     private readonly controller: Controller

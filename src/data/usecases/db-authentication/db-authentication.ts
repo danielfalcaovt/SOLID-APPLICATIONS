@@ -1,5 +1,5 @@
 import { AuthenticationModel, IAuthenticator } from "../../../domain/usecases/authentication"
-import { ILoadAccountByEmail } from "../../protocols/load-account-by-email"
+import { ILoadAccountByEmail } from "../../protocols/db/load-account-by-email"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export class DbAuthentication implements IAuthenticator {

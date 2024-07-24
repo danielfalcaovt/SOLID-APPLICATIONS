@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import AccountModel from "../../../domain/models/account"
-import { AddAccountRepository } from "../../protocols/iadd-account-repository"
+import { AddAccountRepository } from "../../protocols/db/iadd-account-repository"
 import DbAddAccount from "./db-add-account"
 import { AddAccountModel, IAddAccount, IEncrypter } from './db-add-account-protocols'
 

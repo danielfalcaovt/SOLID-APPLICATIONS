@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import AccountModel from "../../../domain/models/account"
-import { ILoadAccountByEmail } from "../../protocols/load-account-by-email"
+import { ILoadAccountByEmail } from "../../protocols/db/load-account-by-email"
 import { DbAuthentication } from "./db-authentication"
 
 interface SutTypes {

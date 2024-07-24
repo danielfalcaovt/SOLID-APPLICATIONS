@@ -10,5 +10,5 @@ export default (app: Express) => {
         parenteses confirmando o término do import antes de chamar o default do arquivo
         a função default retornada pelos arquivos de rota esperam o router 
     */
-    fg.sync('**/src/main/routes/**routes.ts').map(async file => (await import(`../../../${file}`)).default(router))
+    fg.sync('**/src/main/routes/**/**routes.ts').map(async file => (await import(`../../../${file}`)).default(router))
 }

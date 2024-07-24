@@ -28,6 +28,9 @@ const makeEncrypter = (): IEncrypter => {
                 resolve('encrypted_password')
             })
         }
+        async compare(password: string, hash: string): Promise<boolean> {
+            return new Promise(resolve => resolve(true))
+        }
     }
     const encrypterStub = new EncrypterStub()
     return encrypterStub

@@ -93,4 +93,12 @@ describe('DbAuthentication Usecase', () => {
         const response = await sut.auth(makeFakeAccount())
         expect(response).toBeFalsy()
     })
+    it('Should throw if loadAccount throws', async () => {
+        const { sut, loadAccountStub } = makeSut()
+        jest.spyOn(loadAccountStub, 'load').mockReturnValueOnce(new Promise((resolve, reject) => {
+            reject(new Error())
+        }))
+        const promise = sut.auth(makeFakeAccount()) // captura a promise que o sut retorna
+        await expect(promise).rejects.toThrow() // espera que a promise rejeite com um error
+    })
 })

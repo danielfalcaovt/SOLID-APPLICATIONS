@@ -24,7 +24,10 @@ export class DbAuthentication implements IAuthenticator {
         if (!result) {
             return new Promise(resolve => resolve(null))
         }
-        await this.TokenGenerator.generate(account.id)
-        return new Promise(resolve =>resolve('any_token'))
+        const accessToken = await this.TokenGenerator.generate(account.id)
+        if (!accessToken) {
+            return new Promise(resolve =>resolve('any_token'))
+        }
+        return new Promise(resolve => resolve(accessToken))
     }
 }

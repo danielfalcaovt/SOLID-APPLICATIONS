@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import AccountModel from "../../../domain/models/account"
 import { IHashComparer } from "../../protocols/criptography/ihashcomparer"
+import { ITokenGenerator } from "../../protocols/criptography/itoken-generator"
 import { ILoadAccountByEmail } from "../../protocols/db/load-account-by-email"
 import { DbAuthentication } from "./db-authentication"
 
@@ -9,7 +10,7 @@ interface SutTypes {
     sut: DbAuthentication
     updateAccessTokenStub: any
     loadAccountStub: ILoadAccountByEmail
-    tokenGeneratorStub: any
+    tokenGeneratorStub: ITokenGenerator
     hashComparerStub: IHashComparer
 }
 
@@ -65,7 +66,7 @@ const makeHashComparer = (): IHashComparer => {
 }
 
 const makeTokenGeneratorStub = (): any => {
-    class tokenGeneratorStub {
+    class tokenGeneratorStub implements ITokenGenerator {
         generate(id: string): Promise<string> {
             return new Promise(resolve => resolve('any_token'))
         }
@@ -127,5 +128,13 @@ describe('DbAuthentication Usecase', () => {
         const tokenSpy = jest.spyOn(tokenGeneratorStub, 'generate')
         await sut.auth(makeFakeAccount())
         expect(tokenSpy).toHaveBeenCalledWith('any_id')
+    })
+    it('Should throw if TokenGenerator throws', async () => {
+        const { sut, tokenGeneratorStub } = makeSut()
+        jest.spyOn(tokenGeneratorStub, 'generate').mockReturnValueOnce(new Promise((resolve, reject) => {
+            reject(new Error())
+        }))
+        const promise = sut.auth(makeFakeAccount()) // captura a promise que o sut retorna
+        await expect(promise).rejects.toThrow() // espera que a promise rejeite com um error
     })
 })

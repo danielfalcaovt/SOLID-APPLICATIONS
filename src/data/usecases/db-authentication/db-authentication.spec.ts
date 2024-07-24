@@ -39,7 +39,7 @@ const makeUpdateAccessTokenStub = (): any => {
 
 const makeLoadAccountByEmail = (): ILoadAccountByEmail => {
     class loadAccountByEmailStub implements ILoadAccountByEmail {
-        load(email: string): Promise<AccountModel> {
+        load(email: string): Promise<AccountModel | null> {
             return new Promise(resolve => resolve({
                 email: 'any_mail',
                 id: 'any_id',
@@ -72,11 +72,25 @@ const makeTokenGeneratorStub = (): any => {
     const _ = new tokenGeneratorStub()
     return _
 }
+
+const makeFakeAccount = () => {
+    return {
+        email: 'any_mail',
+        password: 'any_password'
+    }
+}
+
 describe('DbAuthentication Usecase', () => {
     it('Should call LoadAccountByEmail with correct values', async () => {
         const { sut, loadAccountStub } = makeSut()
         const loadAccountSpy = jest.spyOn(loadAccountStub, 'load')
-        await sut.auth({ email: 'any_mail', password: 'any_password' })
+        await sut.auth(makeFakeAccount())
         expect(loadAccountSpy).toHaveBeenCalledWith('any_mail')
+    })
+    it('Should return null if invalid credentials', async () => {
+        const { sut, loadAccountStub } = makeSut()
+        jest.spyOn(loadAccountStub, 'load').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+        const response = await sut.auth(makeFakeAccount())
+        expect(response).toBeFalsy()
     })
 })

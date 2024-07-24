@@ -114,4 +114,10 @@ describe('DbAuthentication Usecase', () => {
         const response = await sut.auth(makeFakeAccount())
         expect(response).toBeFalsy()
     })
+    it('Should call TokenGenerator with correct id', async () => {
+        const { sut, tokenGeneratorStub } = makeSut()
+        const tokenSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+        await sut.auth(makeFakeAccount())
+        expect(tokenSpy).toHaveBeenCalledWith('any_id')
+    })
 })

@@ -1,4 +1,5 @@
 import { AuthenticationModel, IAuthenticator } from "../../../domain/usecases/authentication"
+import { IHashComparer } from "../../protocols/criptography/ihashcomparer"
 import { ILoadAccountByEmail } from "../../protocols/db/load-account-by-email"
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -6,8 +7,8 @@ export class DbAuthentication implements IAuthenticator {
     private readonly UpdateAccessTokenRepo: any
     private readonly LoadAccountByEmail: ILoadAccountByEmail
     private readonly TokenGenerator: any
-    private readonly HashComparer: any
-    constructor(updateAccessTokenRepo: any, loadAccountByEmail: ILoadAccountByEmail, tokenGenerator: any, hashComparer: any) {
+    private readonly HashComparer: IHashComparer
+    constructor(updateAccessTokenRepo: any, loadAccountByEmail: ILoadAccountByEmail, tokenGenerator: any, hashComparer: IHashComparer) {
         this.UpdateAccessTokenRepo = updateAccessTokenRepo
         this.LoadAccountByEmail = loadAccountByEmail
         this.TokenGenerator = tokenGenerator
@@ -18,6 +19,7 @@ export class DbAuthentication implements IAuthenticator {
         if (!account) {
             return new Promise(resolve =>resolve(null))
         }
+        await this.HashComparer.compare(authentication.password, account.password)
         return new Promise(resolve =>resolve('any_token'))
 
     }

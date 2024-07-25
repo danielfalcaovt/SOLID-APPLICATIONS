@@ -3,14 +3,9 @@ import { InvalidParamError } from "../../errors";
 import { IValidation } from "../../protocols/validation";
 
 export class CompareFieldsValidation implements IValidation {
-    private readonly firstFieldName: string
-    private readonly secondFieldName: string
-    constructor(firstField: string, secondField: string) {
-        this.firstFieldName = firstField
-        this.secondFieldName = secondField
-    }
+    constructor(private readonly firstField: string, private readonly secondField: string) {}
     validate(data: any): Error | null {
-        if (data[this.firstFieldName] !== data[this.secondFieldName]) {
+        if (data[this.firstField] !== data[this.secondField]) {
             return new InvalidParamError('confirmPassword')
         }
         return null

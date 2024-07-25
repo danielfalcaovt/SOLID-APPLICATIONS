@@ -6,30 +6,26 @@ import { ILoadAccountByEmail } from "../../protocols/db/load-account-by-email"
 
  
 export class DbAuthentication implements IAuthenticator {
-    private readonly UpdateAccessTokenRepo: IUpdateAccessToken
-    private readonly LoadAccountByEmail: ILoadAccountByEmail
-    private readonly TokenGenerator: ITokenGenerator
-    private readonly HashComparer: IHashComparer
-    constructor(updateAccessTokenRepo: IUpdateAccessToken, loadAccountByEmail: ILoadAccountByEmail, tokenGenerator: ITokenGenerator, hashComparer: IHashComparer) {
-        this.UpdateAccessTokenRepo = updateAccessTokenRepo
-        this.LoadAccountByEmail = loadAccountByEmail
-        this.TokenGenerator = tokenGenerator
-        this.HashComparer = hashComparer
-    }
+    constructor(
+        private readonly updateAccessTokenRepo: IUpdateAccessToken, 
+        private readonly loadAccountByEmail: ILoadAccountByEmail, 
+        private readonly tokenGenerator: ITokenGenerator, 
+        private readonly hashComparer: IHashComparer
+    ){}
     async auth(authentication: AuthenticationModel): Promise<string | null> {
-        const account = await this.LoadAccountByEmail.loadByEmail(authentication.email)
+        const account = await this.loadAccountByEmail.loadByEmail(authentication.email)
         if (!account) {
             return new Promise(resolve =>resolve(null))
         }
-        const result = await this.HashComparer.compare(authentication.password, account.password)
+        const result = await this.hashComparer.compare(authentication.password, account.password)
         if (!result) {
             return new Promise(resolve => resolve(null))
         }
-        const accessToken = await this.TokenGenerator.generateToken(account.id)
+        const accessToken = await this.tokenGenerator.generateToken(account.id)
         if (!accessToken) {
             return new Promise(resolve =>resolve(null))
         }
-        await this.UpdateAccessTokenRepo.updateAccessToken(account.id, accessToken)
+        await this.updateAccessTokenRepo.updateAccessToken(account.id, accessToken)
         return new Promise(resolve => resolve(accessToken))
     }
 }

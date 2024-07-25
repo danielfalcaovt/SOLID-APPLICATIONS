@@ -3,10 +3,7 @@ import { ITokenGenerator } from "../../../data/protocols/criptography/itoken-gen
 import jwt from 'jsonwebtoken'
 
 export class JwtAdapter implements ITokenGenerator {
-    private readonly secretKey: string
-    constructor(secretKey: string) {
-        this.secretKey = secretKey
-    }
+    constructor(private readonly secretKey: string) {}
     async generateToken(id: string): Promise<string> {
         const token = jwt.sign({ id }, this.secretKey)
         return new Promise(resolve => resolve(token))

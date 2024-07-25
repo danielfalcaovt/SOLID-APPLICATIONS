@@ -1,10 +1,17 @@
+import { Collection } from "mongodb"
 import { MongoHelper } from "../../../infra/db/mongodb/helpers/mongo-helper"
 import app from "../../config/app"
 import request from 'supertest'
 
+let accountCollection: Collection
+
 describe('SignUp', () => {
     beforeAll(async () => {
         await MongoHelper.connect(process.env.MONGO_URL)
+    })
+    beforeEach(async () => {
+        accountCollection = await MongoHelper.getCollection('accounts')
+        await accountCollection.deleteMany({})
     })
     afterAll(async () => {
         await MongoHelper.disconnect()

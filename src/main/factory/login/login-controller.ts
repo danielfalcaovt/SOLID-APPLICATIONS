@@ -10,9 +10,10 @@ import { makeLoginValidation } from "./login-validation"
 import env from "../../config/env"
 
 export const makeLoginController = (): Controller => {
+    const salt = 12
     const logErrorRepository = new LogErrorRepository()
     const AccountMongo = new AccountMongoRepository()
-    const bcryptAdapter = new BcryptAdapter(12)
+    const bcryptAdapter = new BcryptAdapter(salt)
     const jwtAdapter = new JwtAdapter(env.SECRET_KEY)
     const dbAuthentication = new DbAuthentication(AccountMongo, AccountMongo, jwtAdapter, bcryptAdapter)
     const loginController = new LoginController(makeLoginValidation(), dbAuthentication)

@@ -32,6 +32,16 @@ describe('Account Mongo Repository', () => {
         expect(account.email).toBe('any_mail')
         expect(account.password).toBe('any_password')
     })
+    test('Should throw if add throws', async () => {
+        const sut = makeSut()
+        jest.spyOn(MongoHelper, 'getCollection').mockImplementationOnce(async () => Promise.reject(new Error()))
+        const promise = sut.add({
+            name: 'any_name',
+            email: 'any_mail',
+            password: 'any_password'
+        })
+        expect(promise).rejects.toThrow()
+    })
     test('Should return an account on loadByEmail success', async () => {
         const sut = makeSut()
         await accountCollection.insertOne({

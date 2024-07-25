@@ -61,4 +61,10 @@ describe('Account Mongo Repository', () => {
         const account = await sut.loadByEmail('any_mail')
         expect(account).toBeFalsy()
     })
+    test('Should throw if loadByEmail throws', async () => {
+        const sut = makeSut()
+        jest.spyOn(MongoHelper, 'getCollection').mockImplementationOnce(async () => Promise.reject(new Error()))
+        const promise = sut.loadByEmail('any_mail')
+        expect(promise).rejects.toThrow()
+    })
 })

@@ -24,10 +24,18 @@ export const MongoHelper = {
         }
         return this.db.client.db().collection(name)
     },
-    async map(data: any, _id: string | ObjectId): Promise<any> {
-        return {
-            ...data,
-            id: String(_id)
+    async map(data: any, _id?: string | ObjectId): Promise<any> {
+        if (_id) {
+            return {
+                ...data,
+                id: String(_id)
+            }
+        }else {
+            const { _id, ...result } = data
+            return {
+                ...result,
+                id: _id
+            }
         }
     }
 }

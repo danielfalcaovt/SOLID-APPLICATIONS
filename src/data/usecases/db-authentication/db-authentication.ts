@@ -17,7 +17,7 @@ export class DbAuthentication implements IAuthenticator {
         this.HashComparer = hashComparer
     }
     async auth(authentication: AuthenticationModel): Promise<string | null> {
-        const account = await this.LoadAccountByEmail.load(authentication.email)
+        const account = await this.LoadAccountByEmail.loadByEmail(authentication.email)
         if (!account) {
             return new Promise(resolve =>resolve(null))
         }
@@ -29,7 +29,7 @@ export class DbAuthentication implements IAuthenticator {
         if (!accessToken) {
             return new Promise(resolve =>resolve('any_token'))
         }
-        await this.UpdateAccessTokenRepo.update(account.id, accessToken)
+        await this.UpdateAccessTokenRepo.updateAccessToken(account.id, accessToken)
         return new Promise(resolve => resolve(accessToken))
     }
 }

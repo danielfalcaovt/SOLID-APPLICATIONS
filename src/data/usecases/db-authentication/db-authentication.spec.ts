@@ -32,7 +32,7 @@ const makeSut = (): SutTypes => {
 
 const makeUpdateAccessTokenStub = (): IUpdateAccessToken => {
     class updateAccessTokenStub implements IUpdateAccessToken {
-        update(id: string, token: string): Promise<void> {
+        updateAccessToken(id: string, token: string): Promise<void> {
             return new Promise(resolve => resolve())
         }
     }
@@ -42,7 +42,7 @@ const makeUpdateAccessTokenStub = (): IUpdateAccessToken => {
 
 const makeLoadAccountByEmail = (): ILoadAccountByEmail => {
     class loadAccountByEmailStub implements ILoadAccountByEmail {
-        load(email: string): Promise<AccountModel | null> {
+        loadByEmail(email: string): Promise<AccountModel | null> {
             return new Promise(resolve => resolve({
                 email: 'any_mail',
                 id: 'any_id',
@@ -86,19 +86,19 @@ const makeFakeAccount = () => {
 describe('DbAuthentication Usecase', () => {
     it('Should call LoadAccountByEmail with correct values', async () => {
         const { sut, loadAccountStub } = makeSut()
-        const loadAccountSpy = jest.spyOn(loadAccountStub, 'load')
+        const loadAccountSpy = jest.spyOn(loadAccountStub, 'loadByEmail')
         await sut.auth(makeFakeAccount())
         expect(loadAccountSpy).toHaveBeenCalledWith('any_mail')
     })
     it('Should return null if invalid credentials', async () => {
         const { sut, loadAccountStub } = makeSut()
-        jest.spyOn(loadAccountStub, 'load').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+        jest.spyOn(loadAccountStub, 'loadByEmail').mockReturnValueOnce(new Promise(resolve => resolve(null)))
         const response = await sut.auth(makeFakeAccount())
         expect(response).toBeFalsy()
     })
     it('Should throw if loadAccount throws', async () => {
         const { sut, loadAccountStub } = makeSut()
-        jest.spyOn(loadAccountStub, 'load').mockReturnValueOnce(new Promise((resolve, reject) => {
+        jest.spyOn(loadAccountStub, 'loadByEmail').mockReturnValueOnce(new Promise((resolve, reject) => {
             reject(new Error())
         }))
         const promise = sut.auth(makeFakeAccount()) // captura a promise que o sut retorna
@@ -145,13 +145,13 @@ describe('DbAuthentication Usecase', () => {
     })
     it('Should call UpdateAccessToken with correct values', async () => {
         const { sut, updateAccessTokenStub } = makeSut()
-        const updateSpy = jest.spyOn(updateAccessTokenStub, 'update')
+        const updateSpy = jest.spyOn(updateAccessTokenStub, 'updateAccessToken')
         await sut.auth(makeFakeAccount())
         expect(updateSpy).toHaveBeenCalledWith('any_id', 'any_token')
     })
     it('Should throw if UpdateAccessToken throws', async () => {
         const { sut, updateAccessTokenStub } = makeSut()
-        jest.spyOn(updateAccessTokenStub, 'update').mockReturnValueOnce(new Promise((resolve, reject) => {
+        jest.spyOn(updateAccessTokenStub, 'updateAccessToken').mockReturnValueOnce(new Promise((resolve, reject) => {
             reject(new Error())
         }))
         const promise = sut.auth(makeFakeAccount()) // captura a promise que o sut retorna

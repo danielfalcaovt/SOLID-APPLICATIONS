@@ -68,7 +68,7 @@ const makeHashComparer = (): IHashComparer => {
 
 const makeTokenGeneratorStub = (): any => {
     class tokenGeneratorStub implements ITokenGenerator {
-        generate(id: string): Promise<string> {
+        generateToken(id: string): Promise<string> {
             return new Promise(resolve => resolve('any_token'))
         }
     }
@@ -126,13 +126,13 @@ describe('DbAuthentication Usecase', () => {
     })
     it('Should call TokenGenerator with correct id', async () => {
         const { sut, tokenGeneratorStub } = makeSut()
-        const tokenSpy = jest.spyOn(tokenGeneratorStub, 'generate')
+        const tokenSpy = jest.spyOn(tokenGeneratorStub, 'generateToken')
         await sut.auth(makeFakeAccount())
         expect(tokenSpy).toHaveBeenCalledWith('any_id')
     })
     it('Should throw if TokenGenerator throws', async () => {
         const { sut, tokenGeneratorStub } = makeSut()
-        jest.spyOn(tokenGeneratorStub, 'generate').mockReturnValueOnce(new Promise((resolve, reject) => {
+        jest.spyOn(tokenGeneratorStub, 'generateToken').mockReturnValueOnce(new Promise((resolve, reject) => {
             reject(new Error())
         }))
         const promise = sut.auth(makeFakeAccount()) // captura a promise que o sut retorna

@@ -7,7 +7,7 @@ export class JwtAdapter implements ITokenGenerator {
     constructor(secretKey: string) {
         this.secretKey = secretKey
     }
-    async generate(id: string): Promise<string> {
+    async generateToken(id: string): Promise<string> {
         const token = jwt.sign({ id }, this.secretKey)
         return new Promise(resolve => resolve(token))
     }

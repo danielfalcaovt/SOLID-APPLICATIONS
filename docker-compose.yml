@@ -11,10 +11,13 @@ services:
   api:
     container_name: api-container
     build: .
-    image: solid-applications
+    image: clean-node-api
+    command: npm run debug
     volumes:
-      - ./dist:usr/clean-node-api/dist
+      - ./dist:/usr/clean-node-api/dist
+      - ./package.json:/usr/clean-node-api/package.json
     ports:
       - "5050:5050"
-    link:
+      - "9222:9222"
+    links:
       - mongo

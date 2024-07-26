@@ -7,6 +7,7 @@
     "strict": true,                                      /* Enable all strict type-checking options. */
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     "outDir": "./dist",
+    "sourceMap": true // mapeia aonde o javascript compilou do typescript
   },
   "include": [
     "src"
